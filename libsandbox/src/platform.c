@@ -707,10 +707,12 @@ trace_kill(const proc_t * const pproc, int signo)
         }
         
         /* Flush pending opcode with a sequence of NOP. */
-        unsigned long addr = proc.regs.NIP;
-        unsigned long nop = 0;
-        memset((void *)&nop, OP_NOP, sizeof(unsigned long));
-        __trace(T_OPTION_SETDATA, &proc, (void *)addr, (long *)&nop);
+        {
+            unsigned long nop = 0;
+            unsigned long addr = proc.regs.NIP;
+            memset((void *)&nop, OP_NOP, sizeof(unsigned long));
+            __trace(T_OPTION_SETDATA, &proc, (void *)addr, (long *)&nop);
+        }
         
         /* Replace the pending system call with SYS_pause */
         if (IS_SYSCALL(&proc))
